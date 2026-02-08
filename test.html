@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question for You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap');
+
+        body {
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c1 100%);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2rem;
+            text-align: center;
+            z-index: 10;
+            max-width: 90%;
+            width: 450px;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #d63384;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 20px;
+            pointer-events: none;
+            animation: float 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .btn-transition {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #noBtn {
+            position: relative;
+        }
+
+        #success-message {
+            display: none;
+        }
+
+        .celebration-heart {
+            font-size: 80px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="heart-container"></div>
+
+    <div class="glass-card" id="main-card">
+        <div id="propose-content">
+            <h1 class="text-5xl mb-6">Happy Propose Day!</h1>
+            <p class="text-gray-700 text-lg mb-8">
+                Abhisek has a very special question for you... <br>
+                <span class="font-bold text-pink-600">Will you be mine forever?</span>
+            </p>
+
+            <div class="flex justify-center gap-4 items-center h-16">
+                <button id="yesBtn" class="btn-transition bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-110">
+                    YES!
+                </button>
+                <button id="noBtn" class="btn-transition bg-gray-200 text-gray-600 font-bold py-3 px-8 rounded-full shadow-md">
+                    No
+                </button>
+            </div>
+        </div>
+
+        <div id="success-message">
+            <div class="celebration-heart mb-4">💖</div>
+            <h1 class="text-5xl mb-4">I knew it!</h1>
+            <p class="text-gray-700 text-lg">
+                You just made me the happiest person alive. <br>
+                I promise to love you always!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const proposeContent = document.getElementById('propose-content');
+        const successMessage = document.getElementById('success-message');
+        const heartContainer = document.getElementById('heart-container');
+
+        const phrases = [
+            "Really, a no?",
+            "I don't deserve this...",
+            "Please think again!",
+            "Are you sure?",
+            "You're breaking my heart!",
+            "Look at the Yes button instead",
+            "Give it one more thought?",
+            "Wait, what was that?",
+            "Clicking No is disabled now 😉",
+            "Bye bye No!"
+        ];
+
+        let clickCount = 0;
+        let yesScale = 1;
+
+        // Create background hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+
+        setInterval(createHeart, 300);
+
+        noBtn.addEventListener('click', () => {
+            if (clickCount < phrases.length) {
+                // Change text
+                noBtn.innerText = phrases[clickCount];
+                
+                // Make Yes button bigger
+                yesScale += 0.2;
+                yesBtn.style.transform = `scale(${yesScale})`;
+                
+                // Make No button smaller and harder to click
+                const currentScale = 1 - (clickCount * 0.1);
+                noBtn.style.transform = `scale(${currentScale})`;
+                
+                clickCount++;
+
+                if (clickCount === phrases.length) {
+                    noBtn.style.display = 'none';
+                }
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            proposeContent.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            // Intensive heart shower
+            for(let i=0; i<50; i++) {
+                setTimeout(createHeart, i * 50);
+            }
+        });
+
+        // Move No button on hover if she tries to be sneaky
+        noBtn.addEventListener('mouseover', () => {
+            if (clickCount > 2) {
+                const x = Math.random() * 40 - 20;
+                const y = Math.random() * 40 - 20;
+                noBtn.style.left = `${x}px`;
+                noBtn.style.top = `${y}px`;
+            }
+        });
+    </script>
+</body>
+</html>
